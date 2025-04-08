@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ADE Vision Clock</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(270deg, #00ffff, #ff00ff, #00ff88);
+      background-size: 600% 600%;
+      animation: rainbowBG 15s ease infinite;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    @keyframes rainbowBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    h1 {
+      font-size: 2.8em;
+      margin: 20px;
+      text-shadow: 0 0 12px #00ffff;
+      animation: pulseText 3s infinite ease-in-out;
+    }
+
+    @keyframes pulseText {
+      0%, 100% { text-shadow: 0 0 10px #00ffff; }
+      50% { text-shadow: 0 0 20px #00f0ff; }
+    }
+
+    .card {
+      background: rgba(0, 0, 0, 0.25);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      padding: 30px;
+      border-radius: 25px;
+      box-shadow: 0 0 30px rgba(0,255,255,0.4);
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+      animation: fadeInUp 1.5s ease;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .jam {
+      font-size: 4em;
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: #00ffea;
+      text-shadow: 0 0 20px #00ffffaa;
+    }
+
+    .info {
+      font-size: 1.2em;
+      margin: 10px 0;
+      background-color: rgba(255,255,255,0.1);
+      padding: 10px 15px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.15);
+      text-shadow: 0 0 2px #fff;
+    }
+
+    .btn {
+      background-color: #ffffff;
+      color: #000;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #00ffcc;
+      transform: scale(1.05);
+    }
+
+    footer {
+      margin-top: 50px;
+      font-size: 1em;
+      color: #ffffffcc;
+      padding: 10px;
+      background: rgba(0,0,0,0.2);
+      width: 100%;
+      text-align: center;
+      position: relative;
+      bottom: 0;
+      box-shadow: 0 0 10px #00ffff55;
+    }
+
+  </style>
+</head>
+<body>
+  <h1>✨ ADE VISION CLOCK ✨</h1>
+  
+  <div class="card">
+    <div class="jam" id="jam"></div>
+    <div class="info" id="tanggal"></div>
+    <div class="info" id="cuaca">🌤️ Mengambil cuaca...</div>
+    <div class="info" id="countdown">⏳ Countdown ke 12:00:00 → 🔄</div>
+    <button class="btn" onclick="toggleFullScreen()">📺 Fullscreen Mode</button>
+  </div>
+
+  <footer>© 2025 ADE12. All rights reserved.</footer>
+
+  <!-- Alarm -->
+  <audio id="alarm-sound" src="https://www.soundjay.com/button/beep-07.wav" preload="auto"></audio>
+
+  <script>
+    function updateJam() {
+      const now = new Date();
+      const jam = now.toLocaleTimeString("id-ID", { hour12: false });
+      const tanggal = now.toLocaleDateString("id-ID", {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+      });
+
+      document.getElementById("jam").textContent = jam;
+      document.getElementById("tanggal").textContent = tanggal;
+
+      if (jam === "12:00:00") {
+        document.getElementById("alarm-sound").play();
+        alert("⏰ Alarm: Waktu menunjukkan jam 12 siang!");
+      }
+    }
+
+    setInterval(updateJam, 1000);
+    updateJam();
+
+    async function getCuaca() {
+      try {
+        const res = await fetch("https://wttr.in/Medan?format=%l, Indonesia: +%t %C");
+        const text = await res.text();
+        document.getElementById("cuaca").textContent = `🌤️ Cuaca: ${text}`;
+      } catch {
+        document.getElementById("cuaca").textContent = "❌ Cuaca gagal dimuat.";
+      }
+    }
+    getCuaca();
+
+    function updateCountdown() {
+      const now = new Date();
+      const target = new Date();
+      target.setHours(12, 0, 0, 0);
+      if (now > target) target.setDate(target.getDate() + 1);
+
+      const selisih = target - now;
+      const jam = String(Math.floor(selisih / 1000 / 60 / 60)).padStart(2, '0');
+      const menit = String(Math.floor((selisih / 1000 / 60) % 60)).padStart(2, '0');
+      const detik = String(Math.floor((selisih / 1000) % 60)).padStart(2, '0');
+
+      document.getElementById("countdown").textContent = `⏳ Countdown ke 12:00:00 → ${jam}:${menit}:${detik}`;
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+      }
+    }
+  </script>
+</body>
+</html>
