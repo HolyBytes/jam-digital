@@ -52,7 +52,8 @@ Tampilan estetik, warna gradasi glowing, countdown otomatis ke jam 12 siang, sam
 
 ## 🤳 Tampilan Preview
 
-![Preview](https://via.placeholder.com/800x400.png?text=ADE+Vision+Clock+Preview)
+![Uploading Screenshot 2025-04-08 231727.png…]()
+
 
 > *"Karena jam digital juga butuh gaya."*
 
