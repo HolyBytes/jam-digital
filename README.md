@@ -52,7 +52,7 @@ Tampilan estetik, warna gradasi glowing, countdown otomatis ke jam 12 siang, sam
 
 ## 🤳 Tampilan Preview
 
-![Uploading Screenshot 2025-04-08 231727.png…]()
+[![Uploading Screenshot 2025-04-08 231727.png…]()](https://holybytes.github.io/jam-digital/)
 
 
 > *"Karena jam digital juga butuh gaya."*
